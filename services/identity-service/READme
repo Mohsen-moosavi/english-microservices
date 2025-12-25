@@ -1,0 +1,6 @@
+برای اجرای پروژه در حالت develope: 
+npm run dev
+
+برای اجرای پروژه در حالت build:
+npm run build
+npm start
