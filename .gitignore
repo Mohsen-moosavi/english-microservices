@@ -1,0 +1,85 @@
+# -----------------------
+# Node / TypeScript
+# -----------------------
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# -----------------------
+# Environment
+# -----------------------
+.env
+.env.*            # مثل .env.dev یا .env.prod
+**/.env
+**/.env.*
+
+
+# -----------------------
+# Logs
+# -----------------------
+logs/
+*.log
+*.log.*
+debug.log
+
+# -----------------------
+# IDE / Editor
+# -----------------------
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.code-workspace
+
+# -----------------------
+# OS files
+# -----------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------
+# Docker / temp
+# -----------------------
+docker-compose.override.yml
+docker-compose.override.*.yml
+**/tmp/
+**/cache/
+*.pid
+*.seed
+
+# -----------------------
+# Shared package / npm output
+# -----------------------
+shared/dist/
+shared/build/
+shared/node_modules/
+
+# -----------------------
+# API Gateway
+# -----------------------
+api-gateway/dist/
+api-gateway/build/
+api-gateway/node_modules/
+api-gateway/.env
+api-gateway/.env.*
+
+# -----------------------
+# Microservices / Services
+# -----------------------
+services/*/dist/
+services/*/build/
+services/*/node_modules/
+services/*/.env
+services/*/.env.*
+
+# -----------------------
+# Optional temp / backup
+# -----------------------
+*.bak
+*.tmp
+*.temp
+*.swp
