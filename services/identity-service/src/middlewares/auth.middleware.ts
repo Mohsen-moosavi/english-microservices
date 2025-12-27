@@ -1,4 +1,5 @@
 // middlewares/gatewayContext.ts
+import { User } from "@/models/user.model";
 import { Controller } from "@/types/controller";
 import { errorResponse } from "@/utils/responses";
 

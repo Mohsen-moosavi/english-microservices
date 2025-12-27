@@ -1,12 +1,12 @@
 import express from "express";
-import { authenticate } from "../middlewares/auth.middleware";
+import { gatewayContext } from "../middlewares/auth.middleware";
 import { proxy } from "../middlewares/proxy.middleware";
 
 const router = express.Router();
 
 router.post(
   "/comments",
-  authenticate,
+  gatewayContext,
   proxy("http://contact-service:4003")
 );
 

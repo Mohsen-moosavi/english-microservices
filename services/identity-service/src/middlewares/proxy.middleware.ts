@@ -2,12 +2,13 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import { Request, Response, NextFunction } from "express";
 import { ClientRequest } from "http";
 import { ApiError } from "@/types/error";
+import { AuthRequest } from "@/types/request";
 
 export const proxy = (target: string) =>
   createProxyMiddleware({
     target,
     changeOrigin: true,
-    onProxyReq(proxyReq: ClientRequest, req: Request, res: Response) {
+    onProxyReq(proxyReq: ClientRequest, req: AuthRequest, res: Response) {
       if (req.user) {
         proxyReq.setHeader("x-user-id", req.user.id);
         if (req.user.role) {
