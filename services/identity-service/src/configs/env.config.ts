@@ -2,7 +2,7 @@ export const configs = {
   isProduction: process.env.NODE_ENV === "production",
 
   auth: {
-    jwtSecret: process.env.JWT_SECRET || 'default_secret',
+    apiGatewaySecret: process.env.API_GATEWAY_SECRET || 'default_secret',
   },
   url: {
     port: process.env.PORT,

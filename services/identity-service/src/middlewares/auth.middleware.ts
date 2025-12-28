@@ -1,20 +1,29 @@
-// middlewares/gatewayContext.ts
-import { User } from "@/models/user.model";
 import { Controller } from "@/types/controller";
+import { insecureRequestHandler, setSeureLog } from "@/utils/invalidRequest";
+import { verifyApiGatewayToken } from "@/utils/jwt";
 import { errorResponse } from "@/utils/responses";
 
-export const gatewayContext : Controller = (req ,res ,next) => {
-  const userId = req.headers["x-user-id"];
-  const userRole = req.headers["x-user-role"];
+export const gatewayContext: Controller = (req, res, next) => {
 
-  if (!userId || typeof userId !== "string") {
-    return errorResponse(res,401,"Unauthorized (missing user context)")
+  const apiGatewayToken = req.headers["x-apiGateway-token"];
+
+  if (typeof apiGatewayToken === "string") {
+    const decoded = verifyApiGatewayToken(apiGatewayToken);
+
+    if (!decoded || decoded.tokenType !== "gateway") {
+      insecureRequestHandler(apiGatewayToken, req.ip)
+      return errorResponse(res, 401, "درخواست نا معتبر");
+    }
+
+    req.user = {
+      id: Number(decoded.userid),
+      role: decoded.role,
+      permissions: decoded.permissions ?? []
+    };
+
+    next();
+  }else{ 
+    setSeureLog(undefined,req.ip,"INVALID_GATEWAY_SECRET","x-gateway-token missing or invalid");
+    return errorResponse(res, 401, "درخواست نا معتبر");
   }
-
-  req.user = {
-    id: userId,
-    role: typeof userRole === "string" ? userRole : "",
-  };
-
-  next();
 };

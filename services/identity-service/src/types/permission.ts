@@ -1,2 +1,11 @@
-export type Action = "create" | "update" | "delete" | "read";
-export type Resource = "course" | "comment" | "user";
+export type Action = "INSERT" | "UPDATE" | "DELETE" | "GET";
+export type Resource =
+    "USER"  | "COURSE"  | "COMMENT" | "ARTICLE" |
+    "BOOK"  | "CONTACT" | "FILE"    | "OFF"     |
+    "ROLE"  | "SALE"    | "SESSION" | "TAG"     |
+    "TICKET";
+
+export type  appPermission = `${Resource}:${Action}`
+
+
+
