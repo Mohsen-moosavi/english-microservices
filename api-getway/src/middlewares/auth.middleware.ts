@@ -21,8 +21,9 @@ export const authenticate : Controller = (req, res, next) => {
     }
 
     req.user = {
-      id: payload.sub,
+      id: payload.id,
       role: payload.role,
+      permissions: payload.permissions ?? []
     };
     next();
   } catch {

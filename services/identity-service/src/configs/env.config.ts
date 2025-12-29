@@ -16,5 +16,8 @@ export const configs = {
     password: process.env.DB_PASSWORD,
     dialect: process.env.DB_DIALECT,
     poolSize: process.env.DB_POOL_SIZE || 10,
+  },
+  redis: {
+    urI: process.env.REDIS_URI || ""
   }
 };

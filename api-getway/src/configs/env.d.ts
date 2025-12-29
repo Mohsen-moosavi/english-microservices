@@ -5,7 +5,8 @@ declare global {
       JWT_SECRET: string;
       PORT:number,
       CORS_ORIGIN:string,
-      INTERNAL_SECRET:string
+      API_GAEWAY_SECRET:string,
+      API_GAEWAY_SECRET_EXPIRE_TIME_IN_SECOUND:number
     }
   }
 }
