@@ -1,9 +1,9 @@
-import { Controller } from "@/types/controller";
+import { Middleware } from "@/types/middleware";
 import { appPermission } from "@/types/permission";
 import { errorResponse } from "@/utils/responses";
 
 export const roleGuard =
-    (necessaryPermissions: appPermission): Controller =>
+    (necessaryPermissions: appPermission): Middleware =>
         (req, res, next) => {
 
             if(!req.user){

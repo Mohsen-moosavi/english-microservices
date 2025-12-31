@@ -1,0 +1,13 @@
+{
+  "name": "english-microservices",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "api-gateway",
+    "services/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/express": "5.0.6"
+  }
+}

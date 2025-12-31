@@ -1,8 +1,12 @@
-import { Response, NextFunction } from 'express';
-import { AuthRequest } from './request';
+import { Response, NextFunction } from "express";
+import { AuthRequest } from "./request";
 
-export type Controller = (
-  req: AuthRequest,
+export type Controller<
+  Body = {},
+  Query = {},
+  Params = {}
+> = (
+  req: AuthRequest<Params, any, Body, Query>,
   res: Response,
   next: NextFunction
-) => any;
+) => Promise<any> | any;

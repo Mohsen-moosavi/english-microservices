@@ -2,7 +2,7 @@ import { configs } from "@/configs/env.config";
 import { appPermission } from "@/types/permission";
 import jwt from "jsonwebtoken";
 
-interface JwtPayloadCustom {
+export interface JwtPayloadCustom {
     userid: string;
     role: string;
     permissions: appPermission[],

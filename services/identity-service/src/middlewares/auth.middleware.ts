@@ -1,29 +1,19 @@
-import { Controller } from "@/types/controller";
-import { insecureRequestHandler, setSeureLog } from "@/utils/invalidRequest";
-import { verifyApiGatewayToken } from "@/utils/jwt";
+import { Middleware } from "@/types/middleware";
 import { errorResponse } from "@/utils/responses";
 
-export const gatewayContext: Controller = (req, res, next) => {
+export const gatewayContext: Middleware = (req, res, next) => {
 
-  const apiGatewayToken = req.headers["x-apiGateway-token"];
+  const userDate = req.decodeGateway;
 
-  if (typeof apiGatewayToken === "string") {
-    const decoded = verifyApiGatewayToken(apiGatewayToken);
-
-    if (!decoded || decoded.tokenType !== "gateway") {
-      insecureRequestHandler(apiGatewayToken, req.ip)
-      return errorResponse(res, 401, "درخواست نا معتبر");
-    }
+  if(!userDate || userDate.userid || userDate.role){
+    return errorResponse(res,401,"در خواست نامعتبر1");
+  }
 
     req.user = {
-      id: Number(decoded.userid),
-      role: decoded.role,
-      permissions: decoded.permissions ?? []
+      id: Number(userDate.userid),
+      role: userDate.role,
+      permissions: userDate.permissions ?? []
     };
 
     next();
-  }else{ 
-    setSeureLog(undefined,req.ip,"INVALID_GATEWAY_SECRET","x-gateway-token missing or invalid");
-    return errorResponse(res, 401, "درخواست نا معتبر");
-  }
 };

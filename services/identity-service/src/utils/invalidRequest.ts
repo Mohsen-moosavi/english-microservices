@@ -10,11 +10,11 @@ export const insecureRequestHandler = async (apiGatewayToken: string , ip:string
 
     const insecureUser = userId ? await User.findOne({where:{id : userId}}) : null;
 
-    setSeureLog(insecureUser?.id,ip , "INVALID_GATEWAY_SECRET" , "invalid x-internal-secret" )
+    setSecureLog(insecureUser?.id,ip , "INVALID_GATEWAY_SECRET" , "invalid x-internal-secret" )
 
 }
 
-export async function setSeureLog(userId: number | undefined,ip:string | undefined , action:string  , details:string ){
+export async function setSecureLog(userId: number | undefined,ip:string | undefined , action:string  , details:string ){
     await SecurityLog.create({
         ip: ip ?? null,
         action,

@@ -1,18 +1,20 @@
-import express from "express"
+import express,{Express} from "express"
 import allRoutes from "@/routes/index"
+import cors from "cors"
+import { corsOptions } from "./configs/cors.config";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./utils/errorHandler";
 import { errorResponse } from "./utils/responses";
-import { gatewayContext } from "./middlewares/gatewayContext";
 
-const app = express();
+const app : Express= express();
 
+app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(gatewayContext)
-app.use("/identity-service",allRoutes)
+
+app.use("/api/v1",allRoutes)
 
 
 
