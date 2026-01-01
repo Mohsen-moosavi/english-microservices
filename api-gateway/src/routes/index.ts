@@ -3,6 +3,6 @@ import identityRouter from "@/routes/auth";
 
 const router : Router = Router();
 
-router.use("/identity",identityRouter);
+router.use("/auth",identityRouter);
 
 export default router;

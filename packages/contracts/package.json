@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.2.0",
     "zod": "^4.3.2"
   },
   "devDependencies": {

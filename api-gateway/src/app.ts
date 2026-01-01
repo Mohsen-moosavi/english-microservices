@@ -5,6 +5,8 @@ import { corsOptions } from "./configs/cors.config";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./utils/errorHandler";
 import { errorResponse } from "./utils/responses";
+import swaggerUi from "swagger-ui-express";
+import { openApiDoc } from "./docs/openapi";
 
 const app : Express= express();
 
@@ -14,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDoc));
 app.use("/api/v1",allRoutes)
 
 

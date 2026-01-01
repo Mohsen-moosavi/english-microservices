@@ -6,7 +6,8 @@ export const configs = {
   },
   url:{
     port: process.env.PORT,
-    corsOrigin: process.env.CORS_ORIGIN
+    corsOrigin: process.env.CORS_ORIGIN,
+    swaggerUiUrl: process.env.SWAGGER_UI_URL
   },
   serviceUrl:{
     identityService: process.env.IDENTITY_SERVICE

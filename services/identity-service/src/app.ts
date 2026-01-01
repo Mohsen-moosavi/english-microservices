@@ -1,11 +1,11 @@
-import express from "express"
+import express , {Express} from "express"
 import allRoutes from "@/routes/index"
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./utils/errorHandler";
 import { errorResponse } from "./utils/responses";
 import { gatewayContext } from "./middlewares/gatewayContext";
 
-const app = express();
+const app: Express = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

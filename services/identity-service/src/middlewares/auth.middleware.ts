@@ -6,7 +6,7 @@ export const gatewayContext: Middleware = (req, res, next) => {
   const userDate = req.decodeGateway;
 
   if(!userDate || userDate.userid || userDate.role){
-    return errorResponse(res,401,"در خواست نامعتبر1");
+    return errorResponse(res,401,"در خواست نامعتبر");
   }
 
     req.user = {

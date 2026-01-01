@@ -16,6 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@english/contracts": "workspace:*",
     "@types/express-validator": "^2.20.33",
     "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.13.2",
@@ -29,7 +30,9 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.16.0",
     "sequelize": "^6.37.7",
-    "sequelize-cli": "^6.6.3"
+    "sequelize-cli": "^6.6.3",
+    "svg-captcha": "^1.4.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",

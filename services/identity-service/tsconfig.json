@@ -43,6 +43,7 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
+      "@english/contracts": ["../../packages/contracts/src"],
       "@/*": [
         "*"
       ]
