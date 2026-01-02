@@ -11,7 +11,6 @@ export const http = (url: string) =>
             const apiGatewayToken = generateGetwatSecretToken(req.user);
 
             const config : AxiosRequestConfig = {url , withCredentials:true, headers:{"x-apiGateway-token": apiGatewayToken}}
-            console.log("heeereee========================>", config)
             return await axios(config);
         } catch (err: any) {
 

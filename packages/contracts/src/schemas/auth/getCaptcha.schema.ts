@@ -1,9 +1,9 @@
-import { z } from "zod";
+import z from "./../../generateZodInstance";
+
+export const getCaptchaBodySchema = z.object({
+  uuid: z.string().optional(),
+})
 
 export const getCaptchaSchema = z.object({
-  body: z.object({
-    uuid: z.string().optional(),
-  }),
-  query: z.object({}).optional(),
-  params: z.object({}).optional(),
+  body: getCaptchaBodySchema
 });

@@ -1,7 +1,4 @@
-import { z } from "zod";
-import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
-
-extendZodWithOpenApi(z);
+import  z  from "./../../generateZodInstance";
 
 export const sendOtpBodySchema = z.object({
   phone: z

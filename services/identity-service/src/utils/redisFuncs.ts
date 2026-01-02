@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import { getOtpKeyForRedis } from './getRediskeys';
+import { getOtpCooldownKeyForRedis, getOtpCountToSendSmsKeyForRedis, getOtpKeyForRedis, getOtpResendCountKeyForRedis } from './getRediskeys';
 import redis from '@/configs/redis';
 import { sendMessage } from '@/services/sendMessage';
 
@@ -20,10 +20,13 @@ async function getRandomCode(length:number= 5){
 
 }
 
-export const sendOtpToPhone = async (phone:string, length:number = 5, expireTimeInSecound:number = 120) => {
+export const sendOtpToPhone = async (phone:string, length:number = 5, expireTimeInSecound:number = 240) => {
     const {hashedOtp , otp} = await getRandomCode(length);
 
-    await redis.set(getOtpKeyForRedis(phone), hashedOtp, "EX", expireTimeInSecound,);
+    // await redis.set(getOtpKeyForRedis(phone), hashedOtp, "EX", expireTimeInSecound,);
+    await redis.set(getOtpKeyForRedis(phone), hashedOtp,"EX", expireTimeInSecound,"NX");
+
+
 
     sendMessage(phone,otp)
 };

@@ -11,3 +11,15 @@ export const getPhoneTryTimesForValidateKeyForRedis = (phone:string) => {
 export const getOtpKeyForRedis = (phone:string) => {
     return redisKey(RedisService.IDENTITY, RedisModule.OTP,phone);
 }
+
+export const getOtpCooldownKeyForRedis = (phone:string) => {
+    return redisKey(RedisService.IDENTITY, RedisModule.OTP,phone,"cooldown");
+}
+
+export const getOtpResendCountKeyForRedis = (phone:string) => {
+    return redisKey(RedisService.IDENTITY, RedisModule.OTP,phone,"resend");
+}
+
+export const getOtpCountToSendSmsKeyForRedis = (phone:string) => {
+    return redisKey(RedisService.IDENTITY, RedisModule.OTP,phone,"sendSms");
+}
