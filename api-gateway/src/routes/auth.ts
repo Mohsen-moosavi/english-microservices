@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { forwardToIdentityService } from "@/middlewares/axiosServices";
 import { validate } from "@/middlewares/validation";
-import { getCaptchaSchema, resendOtpSchema, sendOtpSchema } from "@english/contracts";
+import { getCaptchaSchema, resendOtpSchema, sendOtpSchema, verifyOtpSchema } from "@english/contracts";
 
 const router : Router = Router();
 
@@ -18,5 +18,7 @@ const router : Router = Router();
 router.post('/send-otp',validate(sendOtpSchema),forwardToIdentityService("/auth/send-otp"));
 router.post('/resend-otp',validate(resendOtpSchema),forwardToIdentityService("/auth/resend-otp"));
 router.post('/get-captcha',validate(getCaptchaSchema),forwardToIdentityService("/auth/get-captcha"));
+router.post("/verify-code" ,validate(verifyOtpSchema), forwardToIdentityService("/auth/verify-code"))
+
 
 export default router;

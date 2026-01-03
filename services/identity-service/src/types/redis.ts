@@ -5,14 +5,20 @@ export enum RedisService {
 }
 
 export enum RedisModule {
-    CAPTCHA = "user",
-    VALIDATE_PHONE_TIMES = "validatePhoneTimes",
+    CAPTCHA = "captcha",
     OTP = "otp",
     USER = "user",
 }
 
 export enum RedisEntity {
-    BAN = "ban",
+    BANNED_PHON = "ban",
+    VALIDATE_PHONE_TIMES = "validatePhoneTimes",
+    ATTEMPT_TOVALIDATE_OTP = "attemptToValidateOtp",
+    COOLDOWN = "cooldown",
+    RESEND = "resend",
+    SENDSMS = "sendSms",
+    VERIFIED = "verified",
+
 }
 
 // export enum RedisUserKeyType {

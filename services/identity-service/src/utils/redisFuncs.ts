@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import { getOtpCooldownKeyForRedis, getOtpCountToSendSmsKeyForRedis, getOtpKeyForRedis, getOtpResendCountKeyForRedis } from './getRediskeys';
+import { getOtpKeyForRedis } from './getRediskeys';
 import redis from '@/configs/redis';
 import { sendMessage } from '@/services/sendMessage';
 

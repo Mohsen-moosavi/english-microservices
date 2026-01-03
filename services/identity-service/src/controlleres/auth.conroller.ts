@@ -2,11 +2,15 @@ import redis from "@/configs/redis";
 import { User } from "@/database/models/user.model";
 import { Controller } from "@/types/controller";
 import { asyncHandler } from "@/utils/asyncController";
-import { getCaptchaKeyForRedis, getOtpCooldownKeyForRedis, getOtpCountToSendSmsKeyForRedis, getOtpKeyForRedis, getOtpResendCountKeyForRedis, getPhoneTryTimesForValidateKeyForRedis } from "@/utils/getRediskeys";
+import { getAttemptToVerifyOtpKeyForRedis, getBannedPhoneForVerifyOtpKeyForRedis, getCaptchaKeyForRedis, getOtpCooldownKeyForRedis, getOtpCountToSendSmsKeyForRedis, getOtpKeyForRedis, getOtpResendCountKeyForRedis, getPhoneTryTimesForValidateKeyForRedis, getVerifiedPhoneKeyForRedis } from "@/utils/getRediskeys";
 import { sendOtpToPhone } from "@/utils/redisFuncs";
 import { errorResponse, successResponse } from "@/utils/responses";
 import svgCpatcha from "svg-captcha";
-const uuidv4 = require("uuid").v4;
+import uuid from "uuid"
+import bcrypt from 'bcryptjs'
+import { randomInt } from "crypto";
+const uuidv4 = uuid.v4;
+
 
 
 interface sendOtpBody { phone: string, captcha: string, uuid: string }
@@ -20,6 +24,11 @@ const sendOtp: Controller<sendOtpBody> = async (req, res, next) => {
             return errorResponse(res, 429, "لطفا چند دقیقه دیگر دوباره تلاش کنید.")
         }
 
+        const isBanned = await redis.get(getBannedPhoneForVerifyOtpKeyForRedis(phone));
+        if(isBanned){
+            return errorResponse(res,423,"لطفا چند دقیقه بعد، مجددا تلاش کنید.")
+        }
+
         const redisCaptcha = await redis.get(getCaptchaKeyForRedis(uuid));
 
         if (redisCaptcha !== captcha.toLowerCase().trim()) {
@@ -28,7 +37,7 @@ const sendOtp: Controller<sendOtpBody> = async (req, res, next) => {
                 .incr(getPhoneTryTimesForValidateKeyForRedis(phone))
                 .expire(getPhoneTryTimesForValidateKeyForRedis(phone), 120)
                 .exec();
-            return errorResponse(res, 422, "کد امنیتی صحیح نمی باشد.");
+            return errorResponse(res, 400, "کد امنیتی صحیح نمی باشد.");
         }
 
         const countToTrySendSms = await redis.get(getOtpCountToSendSmsKeyForRedis(phone));
@@ -73,13 +82,13 @@ const sendOtp: Controller<sendOtpBody> = async (req, res, next) => {
 
 
 interface resendOtpBody { phone: string }
-const resendOtp: Controller<resendOtpBody> = async (req, res, next) => {
+const resendOtp: Controller<resendOtpBody> = async (req, res) => {
 
     const { phone } = req.body;
 
     const isOtpExist = await redis.get(getOtpKeyForRedis(phone));
     if (!isOtpExist) {
-        return errorResponse(res, 400, "کد منقضی شده است. لطفا دوباره درخواست بدهید.")
+        return errorResponse(res, 410, "کد منقضی شده است. لطفا دوباره درخواست بدهید.")
     }
 
     const isCooldown = await redis.get(getOtpCooldownKeyForRedis(phone));
@@ -89,7 +98,7 @@ const resendOtp: Controller<resendOtpBody> = async (req, res, next) => {
 
     const resendCount = await redis.get(getOtpResendCountKeyForRedis(phone));
     if (resendCount && Number(resendCount) > 1) {
-        return errorResponse(res, 400, "کد منقضی شده است. لطفا دوباره در خواست کنید.");
+        return errorResponse(res, 410, "کد منقضی شده است. لطفا دوباره در خواست کنید.");
     }
 
     await redis
@@ -108,8 +117,9 @@ const resendOtp: Controller<resendOtpBody> = async (req, res, next) => {
     return successResponse(res, 200, `کد با موفقیت ارسال شد`);
 }
 
+
 interface getCaptchaBody { uuid?: string }
-const getCaptcha = asyncHandler<getCaptchaBody>(async (req, res, next) => {
+const getCaptcha = asyncHandler<getCaptchaBody>(async (req, res) => {
     const { uuid } = req.body;
 
     if (uuid) {
@@ -129,13 +139,67 @@ const getCaptcha = asyncHandler<getCaptchaBody>(async (req, res, next) => {
 
     await redis.set(getCaptchaKeyForRedis(newUuid), captcha.text.toLowerCase(), "EX", 60 * 5);
 
-    console.log("uuid:===============================>",newUuid)
-
     return successResponse(res, 200, 'کد کپچا با موفقیت ایجاد شد.', { uuid: newUuid, captcha: captcha.data })
+})
+
+
+interface verifyOtpBody { phone:string, code: string }
+const verifyCode = asyncHandler<verifyOtpBody>(async (req, res) => {
+
+    const { phone, code } = req.body;
+
+    const isBanned = await redis.get(getBannedPhoneForVerifyOtpKeyForRedis(phone));
+    if(isBanned){
+        return errorResponse(res,423,"لطفا چند دقیقه بعد، مجددا تلاش کنید.")
+    }
+
+
+
+    const attemptsToVerifyOtp = await redis.incr(getAttemptToVerifyOtpKeyForRedis(phone));
+
+    if (attemptsToVerifyOtp === 1) {
+        await redis.expire(getAttemptToVerifyOtpKeyForRedis(phone), 300);
+    }
+    if (Number(attemptsToVerifyOtp) > 4) {
+      await redis.set(getBannedPhoneForVerifyOtpKeyForRedis(phone), 1, 'EX', 300);
+      return errorResponse(res, 429, "تعداد دفعات مجاز برای وارد کردن کد، به پایان رسیده است.")
+    }
+
+
+
+    const savedOtp = await redis.get(getOtpKeyForRedis(phone));
+    if (!savedOtp) {
+      return errorResponse(res, 410, "کد منقضی شده است. لطفا دوباره درخواست کنید!");
+    }
+
+
+
+
+    const otpIsCorrect = await bcrypt.compare(code, savedOtp);
+
+    if (!otpIsCorrect) {
+      return errorResponse(res, 400, "کد نادرست است!");
+    }
+
+
+
+
+    const randomCode = randomInt(100000, 999999);
+    await redis.multi()
+        .set(getVerifiedPhoneKeyForRedis(phone), randomCode, "EX", 10 * 60)
+        .del(getOtpKeyForRedis(phone))
+        .del(getAttemptToVerifyOtpKeyForRedis(phone))
+        .exec();
+
+
+
+
+    return successResponse(res, 200, "شماره تلفن با موفقیت احراز شد", { verifiedPhoneCode:randomCode });
 })
 
 export default {
     sendOtp,
     getCaptcha,
-    resendOtp
+    resendOtp,
+    verifyCode
 }
